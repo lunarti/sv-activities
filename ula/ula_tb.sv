@@ -3,11 +3,11 @@
 module ula_tb;
 
     parameter ULA_BITS = 4;
-    parameter VECTOR_LINES = 8;
+    parameter VECTOR_LINES = 16;
 
-    logic [ULA_BITS*3+1:0] vector[VECTOR_LINES:0];
+    logic [ULA_BITS*3+2:0] vector[VECTOR_LINES:0];
     logic [ULA_BITS-1:0] a, b, result, result_esp;
-    logic [1:0] ALUControl;
+    logic [2:0] ALUControl;
     logic z,c,v,n,hs,ls,hi,lo;
     int i;
     int failed_i[$];
