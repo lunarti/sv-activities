@@ -3,7 +3,7 @@
 module ula_tb;
 
     parameter ULA_BITS = 4;
-    parameter VECTOR_LINES = 16;
+    parameter VECTOR_LINES = 20;
 
     logic [ULA_BITS*3+2:0] vector[VECTOR_LINES:0];
     logic [ULA_BITS-1:0] a, b, result, result_esp;
