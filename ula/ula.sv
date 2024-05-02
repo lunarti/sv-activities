@@ -21,33 +21,31 @@ always_comb begin
     case (ALUControl[2:0])
         3'b000: begin // Sum
             result = sum;
-            carry = (sum[width] == 1'b1);
-            // overflow = ((a > 0 && b > 0 && a + b < 0) || (a < 0 && b < 0 && a + b >= 0));
+            carry = sum[width];
             overflow = (a[width-1] == b[width-1]) && (a[width-1] != sum[width-1]);
             negative = sum[width-1];
-            zero = (sum == 0);
+            zero = (result == 0);
         end
         3'b001: begin // Subtract
             result = sum;
-            carry = (sum[width] == 1'b0);
-            // overflow = ((a > 0 && condinvb < 0 && a - condinvb < 0) || (a < 0 && condinvb > 0 && a + condinvb >= 0));
+            carry = sum[width];
             overflow = (a[width-1] != b[width-1]) && (a[width-1] != sum[width-1]);
             negative = sum[width-1];
-            zero = (sum == 0);
+            zero = (result == 0);
         end
         3'b010: begin // And
             result = a & b;
-            negative = result[width-1];
-            zero = (result == 0);
             carry = 1'b0;
             overflow = 1'b0;
+            negative = result[width-1];
+            zero = (result == 0);
         end
         3'b011: begin //Or
             result = a | b;
-            negative = result[width-1];
-            zero = (result == 0);
             carry = 1'b0;
             overflow = 1'b0;
+            negative = result[width-1];
+            zero = (result == 0);
         end
         3'b100: begin // Divide
             if (b != 0) begin
@@ -68,22 +66,23 @@ always_comb begin
         3'b101: begin // Multiply
             product = a * b;
             result = product[width-1:0];
+            carry = product[width];
+            overflow = (product[2*width-1:width] != {{width{product[width-1]}}});
             negative = result[width-1];
             zero = (result == 0);
-            carry = (product[2*width-1:width] != 0);
-            overflow = (product[2*width-1:width] != {{width{product[width-1]}}});
         end
         3'b110: begin // Shift Left
-            result = a <<< b; //logical shift
-            carry = b >= width ? 1'b0 : a[width-b];
-            overflow = (a[width-1] != result[width-1]);
+            product = a <<< b;
+            result = product[width-1:0];
+            carry = product[width];
+            overflow = (product[2*width-1:width] != {{width{product[width-1]}}});
             negative = result[width-1];
             zero = (result == 0);
         end
         3'b111: begin // Shift Right
-            result = a >>> b; // arithmetical shift
+            result = a >>> b;
             carry = b >= width ? a[width-1] : a[b-1];
-            overflow = (a[width-1] != result[width-1]);
+            overflow = 1'b0;
             negative = result[width-1];
             zero = (result == 0);
         end
