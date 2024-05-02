@@ -1,9 +1,9 @@
 module ula #(
     parameter width = 4
 ) (
-    input logic [width-1:0] a,b,
+    input logic signed [width-1:0] a,b,
     input logic [2:0] ALUControl,
-    output logic [width-1:0] result,
+    output logic signed [width-1:0] result,
     output logic overflow,
     output logic carry,
     output logic negative,
@@ -74,16 +74,16 @@ always_comb begin
             overflow = (product[2*width-1:width] != {{width{product[width-1]}}});
         end
         3'b110: begin // Shift Left
-            result = a << b;
-            carry = a[width-1-b];
-            overflow = 1'b0;
+            result = a <<< b; //logical shift
+            carry = b >= width ? 1'b0 : a[width-b];
+            overflow = (a[width-1] != result[width-1]);
             negative = result[width-1];
             zero = (result == 0);
         end
         3'b111: begin // Shift Right
-            result = a >> b;
-            carry = a[b-1];
-            overflow = 1'b0;
+            result = a >>> b; // arithmetical shift
+            carry = b >= width ? a[width-1] : a[b-1];
+            overflow = (a[width-1] != result[width-1]);
             negative = result[width-1];
             zero = (result == 0);
         end
